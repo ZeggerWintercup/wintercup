@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Zegger Wintercup</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gd: #1a3a2a; --gm: #2d5a3d; --gl: #4a8c5c; --gp: #c8e6c9;
+  --cr: #f5f0e8; --cd: #ede5d0;
+  --gold: #c9a84c; --goldl: #f0d878;
+  --wh: #ffffff; --td: #1a1a1a; --tm: #4a4a4a; --tl: #8a8a8a;
+  --red: #c0392b; --redl: #fadbd8;
+  --blue: #1565c0; --bluel: #e3f2fd;
+  --sh: 0 4px 20px rgba(0,0,0,0.15); --shsm: 0 2px 8px rgba(0,0,0,0.08);
+  --r: 6px; --rl: 12px;
+  --hh: 56px; --nh: 62px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--cr);color:var(--td);padding-bottom:calc(var(--nh) + env(safe-area-inset-bottom))}
+
+/* HEADER */
+.hdr{background:var(--gd);position:fixed;top:0;left:0;right:0;height:var(--hh);z-index:200;box-shadow:var(--sh);display:flex;align-items:center;justify-content:space-between;padding:0 16px;padding-top:env(safe-area-inset-top)}
+.logo-t{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:900;color:var(--gold)}
+.logo-s{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:rgba(200,230,200,0.65);letter-spacing:.08em;text-transform:uppercase;display:block;margin-top:-1px}
+.adm-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:var(--cr);font-family:'IBM Plex Mono',monospace;font-size:.7rem;padding:7px 13px;border-radius:20px;cursor:pointer}
+.adm-badge{background:var(--gold);color:var(--gd);font-family:'IBM Plex Mono',monospace;font-size:.65rem;padding:5px 11px;border-radius:20px;font-weight:700;border:none;cursor:pointer}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--nh);padding-bottom:env(safe-area-inset-bottom);background:var(--gd);display:flex;z-index:200;box-shadow:0 -2px 20px rgba(0,0,0,.2)}
+.ntab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;color:rgba(200,230,200,.55);font-family:'IBM Plex Sans',sans-serif;font-size:.52rem;font-weight:500;cursor:pointer;padding:6px 2px;letter-spacing:.02em;transition:color .15s}
+.ntab .ic{font-size:1.05rem;line-height:1}
+.ntab.active{color:var(--gold)}
+.ntab.active .ic{transform:translateY(-2px)}
+
+/* MAIN */
+.main{padding-top:calc(var(--hh) + 14px);padding-bottom:14px;min-height:100vh}
+.panel{display:none;padding:0 13px}
+.panel.active{display:block}
+
+/* SECTION */
+.sh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;padding-top:2px}
+.st{font-family:'Playfair Display',serif;font-size:1.45rem;font-weight:700;color:var(--gd)}
+.ss{font-size:.7rem;color:var(--tl);font-family:'IBM Plex Mono',monospace}
+
+/* CARD */
+.card{background:var(--wh);border-radius:var(--rl);box-shadow:var(--shsm);margin-bottom:12px;overflow:hidden;border:1px solid rgba(0,0,0,.05)}
+.ch{padding:13px 15px 10px;border-bottom:1px solid var(--cd);display:flex;align-items:center;justify-content:space-between}
+.ct{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:var(--gd)}
+.cb{padding:13px 15px}
+
+/* STATS */
+.srow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.sc{background:var(--wh);border-radius:var(--rl);padding:13px 15px;box-shadow:var(--shsm);border-left:4px solid var(--gl)}
+.sv{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--gd);line-height:1}
+.sl{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--tl);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+
+/* TABLE */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+th{background:var(--gd);color:var(--cr);padding:9px 9px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.05em;text-transform:uppercase;font-weight:500;white-space:nowrap}
+td{padding:9px 9px;border-bottom:1px solid var(--cd);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+
+/* BADGES */
+.rb{display:inline-flex;width:22px;height:22px;align-items:center;justify-content:center;border-radius:50%;font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:700}
+.r1{background:var(--gold);color:var(--gd)}.r2{background:#c0c0c0;color:#333}.r3{background:#cd7f32;color:#fff}.ro{background:var(--cd);color:var(--tm)}
+.hb{display:inline-block;padding:2px 7px;border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;background:var(--gp);color:var(--gd)}
+.sp{display:inline-block;padding:3px 8px;border-radius:20px;font-size:.65rem;font-family:'IBM Plex Mono',monospace;font-weight:500;white-space:nowrap}
+.so{background:#e8f5e9;color:#2e7d32}.sc2{background:var(--cd);color:var(--tm)}.sa{background:var(--redl);color:var(--red)}
+.pb{display:inline-block;padding:2px 7px;border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:700;background:#fff9c4;color:#795548}
+
+/* FORMS */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+.fg label{font-size:.68rem;font-weight:600;color:var(--tm);letter-spacing:.04em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+.fg input,.fg select{padding:12px 13px;border:1.5px solid var(--cd);border-radius:var(--r);font-family:'IBM Plex Sans',sans-serif;font-size:.95rem;color:var(--td);background:var(--cr);width:100%;-webkit-appearance:none}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--gl);background:var(--wh)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* BUTTONS */
+.btn{font-family:'IBM Plex Sans',sans-serif;font-size:.88rem;font-weight:600;padding:13px 20px;border-radius:var(--r);border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px;-webkit-appearance:none}
+.btn:active{transform:scale(.97)}
+.bp{background:var(--gm);color:#fff}.bg{background:var(--cd);color:var(--td)}.bd{background:var(--red);color:#fff}.bgo{background:var(--gold);color:var(--gd)}.bbl{background:var(--blue);color:#fff}
+.bf{width:100%}.bsm{padding:8px 13px;font-size:.76rem}
+.brow{display:flex;gap:8px;flex-wrap:wrap}
+
+/* RONDE CARDS */
+.rc{background:var(--wh);border-radius:var(--rl);box-shadow:var(--shsm);margin-bottom:10px;border:1px solid rgba(0,0,0,.05);overflow:hidden}
+.rch{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;cursor:pointer}
+.rd{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:var(--gd)}
+.rm{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--tl);margin-top:2px}
+.ra{display:flex;gap:8px;padding:10px 15px;border-top:1px solid var(--cd);background:var(--cr);flex-wrap:wrap}
+
+/* SCORE ENTRY */
+.seg{display:grid;grid-template-columns:repeat(9,1fr);gap:5px}
+.hb2{display:flex;flex-direction:column;align-items:center;gap:2px}
+.hb2 .hn{font-family:'IBM Plex Mono',monospace;font-size:.58rem;color:var(--tl);font-weight:600}
+.hb2 .hp{font-size:.52rem;color:var(--tl)}
+.hb2 input{width:100%;max-width:44px;height:40px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.95rem;font-weight:700;border:2px solid var(--cd);border-radius:var(--r);background:var(--cr);padding:0;-webkit-appearance:none}
+.hb2 input:focus{outline:none;border-color:var(--gl);background:#fff}
+.hb2 input.birdie{border-color:#4caf50!important;background:#e8f5e9!important;color:#2e7d32}
+.hb2 input.eagle{border-color:#1b5e20!important;background:#c8e6c9!important;color:#1b5e20}
+.hb2 input.blob{border-color:var(--red)!important;background:var(--redl)!important}
+.hb2 .hpts{font-family:'IBM Plex Mono',monospace;font-size:.55rem;font-weight:600;color:var(--gm);min-height:11px}
+.ssumm{background:var(--gd);color:var(--cr);border-radius:var(--r);padding:12px 13px;font-family:'IBM Plex Mono',monospace;font-size:.73rem;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:11px 0}
+.si2{display:flex;flex-direction:column;align-items:center}
+.sv2{font-size:1.25rem;font-weight:700;color:var(--gold)}
+.sl2{font-size:.55rem;color:rgba(200,230,200,.7);text-transform:uppercase;letter-spacing:.06em}
+
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;align-items:flex-end;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+.mo.open{display:flex}
+.md{background:var(--wh);border-radius:var(--rl) var(--rl) 0 0;padding:20px;width:100%;max-width:480px;box-shadow:var(--sh);max-height:85vh;overflow-y:auto}
+.md h3{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gd);margin-bottom:14px}
+.mh{width:36px;height:4px;background:var(--cd);border-radius:2px;margin:0 auto 14px}
+
+/* ECLECTIC */
+.ec{text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.7rem}
+.ee{background:#c8e6c9!important;color:#1b5e20;font-weight:700}
+.eb{background:#e8f5e9!important;color:#2e7d32;font-weight:700}
+.ep{background:#fffde7!important}
+.ebl{background:#ffebee!important;color:#c62828}
+
+/* SETUP */
+.sbox{background:var(--gd);color:var(--cr);border-radius:var(--rl);padding:18px;margin-bottom:14px}
+.sbox h3{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--gold);margin-bottom:10px}
+.sbox p{font-size:.82rem;line-height:1.6;margin-bottom:6px}
+.sbox code{background:rgba(255,255,255,.15);padding:1px 5px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:.78rem}
+.step{display:flex;align-items:flex-start;gap:9px;margin-bottom:9px}
+.snum{background:var(--gold);color:var(--gd);width:21px;height:21px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:700;flex-shrink:0;margin-top:2px}
+.empty{text-align:center;padding:28px 16px;color:var(--tl);font-style:italic;font-size:.84rem}
+
+/* SEIZOEN BANNER */
+.sz-banner{
+  background:var(--gold);color:var(--gd);
+  display:none;
+  align-items:center;justify-content:space-between;
+  padding:8px 16px;
+  font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;
+  position:sticky;top:var(--hh);z-index:150;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+.sz-banner.active{display:flex}
+.sz-banner-label{display:flex;align-items:center;gap:8px}
+.sz-banner-close{
+  background:rgba(0,0,0,.15);border:none;color:var(--gd);
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:700;
+  padding:5px 12px;border-radius:20px;cursor:pointer;
+  white-space:nowrap;
+}
+.sz-banner-close:active{background:rgba(0,0,0,.25)}
+
+/* TOAST */
+.tc{position:fixed;bottom:calc(var(--nh) + 10px);left:13px;right:13px;z-index:999;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.toast{background:var(--gd);color:var(--cr);padding:12px 16px;border-radius:var(--rl);font-size:.84rem;box-shadow:var(--sh);animation:sup .3s ease;border-left:4px solid var(--gold)}
+.toast.err{background:var(--red);border-left-color:#ff8a80}
+@keyframes sup{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+
+@media(min-width:600px){.main,.hdr,.bnav{max-width:100%}.panel{max-width:540px;margin:0 auto}.seg{gap:7px}.hb2 input{max-width:50px;height:44px}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div><div class="logo-t">⛳ Zegger Wintercup</div><span class="logo-s">2025–2026 · v1.4</span></div>
+  <div style="display:flex;gap:8px;align-items:center"><button class="adm-btn" id="refreshBtn" onclick="laadAlles()" title="Herverbinden">↻</button><div id="adminArea"><button class="adm-btn" onclick="openAdminLogin()">Admin</button></div><button class="adm-btn" onclick="uitloggenSpeler()" title="Uitloggen">↩</button></div>
+</header>
+
+<div class="sz-banner" id="szBanner">
+  <div class="sz-banner-label">
+    <span>📁</span>
+    <span id="szBannerLabel">Seizoen 2024-2025</span>
+  </div>
+  <button class="sz-banner-close" onclick="resetNaarHuidigSeizoen()">× Huidig seizoen</button>
+</div>
+
+<nav class="bnav">
+  <button class="ntab active" onclick="showPanel('klassement',this)"><span class="ic">🏆</span>Stand</button>
+  <button class="ntab" onclick="showPanel('rondes',this)"><span class="ic">📅</span>Ronden</button>
+  <button class="ntab" onclick="showPanel('spelers',this)"><span class="ic">👤</span>Spelers</button>
+  <button class="ntab" onclick="showPanel('birdies',this)"><span class="ic">🐦</span>Birdies</button>
+  <button class="ntab" onclick="showPanel('eclectic',this)"><span class="ic">🎯</span>Eclectic</button>
+  <button class="ntab" onclick="showPanel('blobs',this)"><span class="ic">🟥</span>Blobs</button>
+  <button class="ntab" onclick="showPanel('meer',this)"><span class="ic">⋯</span>Meer</button>
+</nav>
+
+
+<!-- SPELER LOGIN SCHERM -->
+<div id="spelersLoginScherm" style="display:none;position:fixed;inset:0;background:var(--gd);z-index:500;flex-direction:column;align-items:center;justify-content:center;padding:32px">
+  <div style="text-align:center;margin-bottom:32px">
+    <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--gold)">⛳ Zegger Wintercup</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:rgba(200,230,200,.65);letter-spacing:.08em;text-transform:uppercase;margin-top:4px">2025–2026</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:rgba(200,230,200,.35);margin-top:4px">v1.4</div>
+  </div>
+  <div style="background:rgba(255,255,255,.08);border-radius:var(--rl);padding:24px;width:100%;max-width:340px">
+    <div id="loginFout" style="background:var(--red);color:white;padding:10px 14px;border-radius:var(--r);font-size:.82rem;margin-bottom:14px;display:none"></div>
+    <div class="fg" style="margin-bottom:14px">
+      <label style="color:rgba(200,230,200,.8)">Jouw naam</label>
+      <select id="loginNaamSelect" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:white;font-size:.95rem">
+        <option value="">— Kies je naam —</option>
+      </select>
+    </div>
+    <div class="fg" style="margin-bottom:20px">
+      <label style="color:rgba(200,230,200,.8)">Pincode</label>
+      <input type="number" id="loginPin" placeholder="••••" inputmode="numeric" min="1000" max="9999"
+        style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:white;font-size:1.4rem;text-align:center;letter-spacing:.2em"
+        onkeydown="if(event.key==='Enter')doSpelerLogin()">
+    </div>
+    <button class="btn btn-gold bf" style="width:100%;background:var(--gold);color:var(--gd);font-size:1rem;padding:14px" onclick="doSpelerLogin()">Inloggen</button>
+    <p style="font-size:.72rem;color:rgba(200,230,200,.5);text-align:center;margin-top:14px;font-family:'IBM Plex Mono',monospace">Pin vergeten? Neem contact op met de admin.</p>
+  </div>
+</div>
+
+<div class="tc" id="tc"></div>
+
+<!-- ADMIN LOGIN -->
+<div class="mo" id="moAdmin">
+  <div class="md"><div class="mh"></div><h3>Admin Toegang</h3>
+    <div class="fg"><label>Wachtwoord</label><input type="password" id="adminPwd" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
+    <div class="brow"><button class="btn bp bf" onclick="doAdminLogin()">Inloggen</button><button class="btn bg bf" onclick="closeModal('moAdmin')">Annuleren</button></div>
+  </div>
+</div>
+
+<!-- STATUS MODAL -->
+<div class="mo" id="moStatus">
+  <div class="md"><div class="mh"></div>
+    <h3 id="smTitle">Ronde Beheren</h3>
+    <p style="font-size:.82rem;color:var(--tm);margin-bottom:14px" id="smSub"></p>
+    <div style="display:flex;flex-direction:column;gap:9px" id="smBtns"></div>
+    <button class="btn bg bf" style="margin-top:8px" onclick="closeModal('moStatus')">Annuleren</button>
+  </div>
+</div>
+
+
+
+<!-- BEWERK SPELER MODAL -->
+<div class="mo" id="moBewerkSp">
+  <div class="md"><div class="mh"></div>
+    <h3>Speler Bewerken</h3>
+    <input type="hidden" id="bsId">
+    <div class="fg">
+      <label>Volledige naam *</label>
+      <input type="text" id="bsNaam" placeholder="Voornaam Achternaam">
+    </div>
+    <div class="fr">
+      <div class="fg">
+        <label>Exact Handicap *</label>
+        <input type="number" id="bsHcp" step=".1" min="-10" max="54" inputmode="decimal">
+      </div>
+      <div class="fg">
+        <label>Pincode</label>
+        <input type="number" id="bsPin" placeholder="4 cijfers" inputmode="numeric" min="1000" max="9999">
+      </div>
+    </div>
+    <div class="fr">
+      <div class="fg">
+        <label>Mobiel</label>
+        <input type="tel" id="bsTel" placeholder="06-12345678" inputmode="tel">
+      </div>
+      <div class="fg">
+        <label>E-mail</label>
+        <input type="email" id="bsEmail" inputmode="email">
+      </div>
+    </div>
+    <div class="brow">
+      <button class="btn bp bf" onclick="slaSpelerOp()">Opslaan</button>
+      <button class="btn bg bf" onclick="closeModal('moBewerkSp')">Annuleren</button>
+    </div>
+    <div style="margin-top:12px;border-top:1px solid var(--cd);padding-top:12px">
+      <button class="btn bd bf" onclick="verwijderSpeler(document.getElementById('bsId').value)" style="width:100%">🗑 Speler Verwijderen</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIN MODAL -->
+<div class="mo" id="moPin">
+  <div class="md"><div class="mh"></div>
+    <h3>Score Invoeren</h3>
+    <p style="font-size:.84rem;color:var(--tm);margin-bottom:14px">Kies je naam en voer je pincode in.</p>
+    <div class="fg"><label>Naam</label>
+      <select id="pinSpelerSelect"><option value="">— Kies je naam —</option></select>
+    </div>
+    <div class="fg"><label>Pincode</label>
+      <input type="number" id="pinInput" placeholder="••••" inputmode="numeric" maxlength="4" min="1000" max="9999"
+        style="letter-spacing:.2em;font-size:1.4rem;text-align:center"
+        onkeydown="if(event.key==='Enter')bevestigPin()">
+    </div>
+    <div id="pinFout" style="color:var(--red);font-size:.82rem;margin-bottom:10px;display:none">Onjuiste pincode. Probeer opnieuw.</div>
+    <div class="brow">
+      <button class="btn bp bf" onclick="bevestigPin()">Bevestigen</button>
+      <button class="btn bg bf" onclick="closeModal('moPin')">Annuleren</button>
+    </div>
+  </div>
+</div>
+
+<!-- NIEUWE RONDE -->
+<div class="mo" id="moRonde">
+  <div class="md"><div class="mh"></div><h3>Nieuwe Ronde</h3>
+    <div class="fr">
+      <div class="fg"><label>Datum</label><input type="date" id="nrDatum"></div>
+      <div class="fg"><label>Starttijd scores</label><input type="time" id="nrTijd" value="08:00"></div>
+    </div>
+    <div class="fg"><label>Type greens</label>
+      <select id="nrType"><option value="zomergreens">☀️ Zomergreens</option><option value="wintergreens">❄️ Wintergreens</option></select>
+    </div>
+    <div class="fg"><label>Seizoen <span style="font-weight:400;color:var(--tl)">(bijv. 2025-2026)</span></label>
+      <input type="text" id="nrSeizoen" placeholder="2025-2026">
+    </div>
+    <div class="brow"><button class="btn bp bf" onclick="maakNieuweRonde()">Aanmaken</button><button class="btn bg bf" onclick="closeModal('moRonde')">Annuleren</button></div>
+  </div>
+</div>
+
+<main class="main">
+
+<!-- SETUP -->
+<div id="setupPanel" style="display:none;padding:13px">
+  <div class="sbox">
+    <h3>⚙️ Supabase Configuratie</h3>
+    <div class="step"><div class="snum">1</div><p>Ga naar <code>supabase.com</code> → gratis account</p></div>
+    <div class="step"><div class="snum">2</div><p>Nieuw project, regio <code>West Europe</code></p></div>
+    <div class="step"><div class="snum">3</div><p><code>Settings → API</code> → kopieer URL en <code>anon public</code> key</p></div>
+    <div class="step"><div class="snum">4</div><p>Vul in en klik Initialiseren. Als de database al bestaat, start de app direct.</p></div>
+  </div>
+  <div class="card"><div class="cb">
+    <div class="fg"><label>Supabase Project URL</label><input type="url" id="sbUrl" placeholder="https://xxxx.supabase.co"></div>
+    <div class="fg"><label>Anon Key</label><input type="text" id="sbKey" placeholder="eyJhbGci..."></div>
+    <div class="fg"><label>Admin Wachtwoord</label><input type="password" id="setupPwd" placeholder="Min. 6 tekens"></div>
+    <button class="btn bgo bf" onclick="initSupabase()">Database Initialiseren</button>
+  </div></div>
+  <div id="sqlBox" style="display:none">
+    <p style="font-size:.82rem;margin-bottom:8px;font-weight:600">Voer dit uit in <strong>Supabase → SQL Editor → New Query</strong>:</p>
+    <pre id="sqlPre" style="background:#1a1a1a;color:#e8e8e8;padding:14px;border-radius:8px;overflow:auto;font-size:.65rem;max-height:240px;white-space:pre-wrap;word-break:break-all"></pre>
+    <button class="btn bg bf" style="margin:9px 0" onclick="kopieerSQL()">📋 Kopieer SQL</button>
+    <button class="btn bp bf" onclick="startApp()">✓ Database klaar, start de app</button>
+  </div>
+</div>
+
+<!-- KLASSEMENT -->
+<div class="panel active" id="panel-klassement">
+  <div class="sh"><div><div class="st">Klassement</div><div class="ss">Beste 5 ronden tellen · punten</div></div></div>
+  <div class="srow">
+    <div class="sc"><div class="sv" id="statR">—</div><div class="sl">Ronden gespeeld</div></div>
+    <div class="sc"><div class="sv" id="statL" style="font-size:1rem;padding-top:5px">—</div><div class="sl">Leider</div></div>
+  </div>
+  <div class="card"><div class="tw">
+    <table><thead><tr><th>#</th><th>Naam</th><th>Hcp</th><th>#1</th><th>#2</th><th>#3</th><th>#4</th><th>#5</th><th>Tot</th></tr></thead>
+    <tbody id="kBody"><tr><td colspan="9"><div class="empty">Laden…</div></td></tr></tbody></table>
+  </div></div>
+</div>
+
+<!-- RONDES -->
+<div class="panel" id="panel-rondes">
+  <div class="sh">
+    <div><div class="st">Ronden</div><div class="ss">Beheer &amp; scores</div></div>
+    <div id="nrBtn" style="display:none"><button class="btn bp bsm" onclick="openNieuweRonde()">+ Ronde</button></div>
+  </div>
+  <div id="rondesLijst"></div>
+
+  <!-- Score invoer -->
+  <div id="secScore" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="ct" id="scoreTitel">Score Invoeren</div><button class="btn bg bsm" onclick="sluitScore()">✕</button></div>
+      <div class="cb">
+        <div class="fg"><label>Speler</label>
+          <select id="spSel" onchange="renderScoreInputs()"><option value="">— Kies speler —</option></select>
+        </div>
+        <div id="scoreWrap" style="display:none">
+          <p style="font-size:.68rem;color:var(--tl);margin-bottom:7px;font-family:'IBM Plex Mono',monospace">Holes 1–9</p>
+          <div class="seg" id="sg1"></div>
+          <p style="font-size:.68rem;color:var(--tl);margin:11px 0 7px;font-family:'IBM Plex Mono',monospace">Holes 10–18</p>
+          <div class="seg" id="sg2"></div>
+          <div class="ssumm" id="ssumm" style="display:none">
+            <div class="si2"><div class="sv2" id="sBruto">—</div><div class="sl2">Bruto</div></div>
+            <div class="si2"><div class="sv2" id="sSfd">—</div><div class="sl2">Stableford</div></div>
+            <div class="si2"><div class="sv2" id="sHcp">—</div><div class="sl2">Nieuw hcp</div></div>
+          </div>
+          <button class="btn bp bf" onclick="slaScoreOp()">Score Opslaan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Uitslag -->
+  <div id="secUitslag" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="ct" id="uTitle">Uitslag</div><button class="btn bg bsm" onclick="sluitUitslag()">✕</button></div>
+      <div class="tw">
+        <table><thead><tr>
+          <th>#</th><th>Naam</th><th>Hcp</th><th>Sfd</th><th>Ptn</th>
+          <th>Bruto</th><th>🐦</th><th>🟥</th><th>Nieuw</th>
+          <th id="uActTh" style="display:none"></th>
+        </tr></thead>
+        <tbody id="uBody"><tr><td colspan="10"><div class="empty">Geen scores</div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPELERS -->
+<div class="panel" id="panel-spelers">
+  <div class="sh"><div><div class="st">Spelers</div><div class="ss">Registratie</div></div></div>
+
+  <div class="card"><div class="ch"><div class="ct">Geregistreerde Spelers</div></div>
+    <div class="tw"><table>
+      <thead><tr><th>Naam</th><th>Hcp</th><th id="spTelTh" style="display:none">Mobiel</th><th id="spEmailTh" style="display:none">E-mail</th><th id="spPinTh" style="display:none">Pin</th><th id="spBetTh" style="display:none">Betaald</th><th id="spActTh" style="display:none"></th></tr></thead>
+      <tbody id="spBody"><tr><td colspan="4"><div class="empty">Laden…</div></td></tr></tbody>
+    </table></div>
+  </div>
+
+  <div class="card" id="spelerToevoegenCard" style="display:none"><div class="ch"><div class="ct">Speler Toevoegen</div></div><div class="cb">
+    <div class="fg"><label>Volledige naam *</label><input type="text" id="rNaam" placeholder="Voornaam Achternaam" autocomplete="name"></div>
+    <div class="fr">
+      <div class="fg"><label>Handicap *</label><input type="number" id="rHcp" placeholder="bijv. 12.4" step=".1" min="-10" max="54" inputmode="decimal"></div>
+      <div class="fg"><label>Pincode <span style="font-weight:400;color:var(--tl)">(4 cijfers)</span></label><input type="number" id="rPin" placeholder="1234" inputmode="numeric" min="1000" max="9999"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Mobiel</label><input type="tel" id="rTel" placeholder="06-12345678" inputmode="tel"></div>
+      <div class="fg"><label>E-mail</label><input type="email" id="rEmail" placeholder="naam@voorbeeld.nl" inputmode="email"></div>
+    </div>
+    <button class="btn bp bf" onclick="registreerSpeler()">Speler Registreren</button>
+  </div></div>
+
+</div>
+
+<!-- ECLECTIC -->
+<div class="panel" id="panel-eclectic">
+  <div class="sh">
+    <div><div class="st">Eclectic</div><div class="ss">Alleen zomergreens</div></div>
+    <div style="display:flex;gap:6px">
+      <button class="btn bp bsm" id="eBr" onclick="laadEclectic('bruto')">Bruto</button>
+      <button class="btn bg bsm" id="eNe" onclick="laadEclectic('netto')">Netto</button>
+    </div>
+  </div>
+  <div class="card"><div class="tw">
+    <table><thead id="eHead"></thead><tbody id="eBody"><tr><td colspan="22"><div class="empty">Laden…</div></td></tr></tbody></table>
+  </div></div>
+</div>
+
+<!-- EXTRAS -->
+<!-- BIRDIES PANEL -->
+<div class="panel" id="panel-birdies">
+  <div class="sh">
+    <div><div class="st">Birdies</div><div class="ss">Alleen zomergreens</div></div>
+    <div style="display:flex;gap:6px">
+      <button class="btn bp bsm" id="birdBrBtn" onclick="laadBirds('bruto')">Bruto</button>
+      <button class="btn bg bsm" id="birdNeBtn" onclick="laadBirds('netto')">Netto</button>
+    </div>
+  </div>
+  <div class="card"><div class="tw"><table>
+    <thead id="birdHead"><tr><th>#</th><th>Naam</th><th>Birdies</th><th>Eagles</th></tr></thead>
+    <tbody id="birdBody"><tr><td colspan="4"><div class="empty">Laden…</div></td></tr></tbody>
+  </table></div></div>
+</div>
+
+<!-- BLOBS PANEL -->
+<div class="panel" id="panel-blobs">
+  <div class="sh"><div><div class="st">Blobs</div><div class="ss">Zomer- en wintergreens</div></div></div>
+  <div class="card"><div class="tw"><table>
+    <thead><tr><th>#</th><th>Naam</th><th>Blobs</th></tr></thead>
+    <tbody id="blobBody"><tr><td colspan="3"><div class="empty">Laden…</div></td></tr></tbody>
+  </table></div></div>
+</div>
+
+<!-- MEER PANEL -->
+<div class="panel" id="panel-meer">
+  <div class="st" style="margin-bottom:14px">Meer</div>
+
+  <!-- Oude seizoenen -->
+  <div class="card">
+    <div class="ch"><div class="ct">📁 Oude Seizoenen</div></div>
+    <div id="oudeSeizoenenLijst" class="cb">
+      <div class="empty">Laden…</div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<script>
+const PAR = [4,3,4,5,3,4,5,4,4, 4,3,4,5,3,4,4,5,4];
+const SI  = [16,10,6,2,18,14,4,8,12, 17,13,5,1,15,11,7,3,9];
+
+let SBU='', SBK='', APWD='', isAdmin=false;
+let activSeizoen=null; // null = huidig seizoen
+let curId=null, curRonde=null, allSp=[], allR=[], eclMode='bruto';
+
+window.onload=async()=>{
+  // Supabase credentials zijn vast ingebouwd
+  SBU='https://ndzxnehztfacyaveyvvt.supabase.co';
+  SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5kenhuZWh6dGZhY3lhdmV5dnZ0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNDU0NzMsImV4cCI6MjA5MTkyMTQ3M30.cN8i1uO7WHIy7Qdz2saSmhoSvTjFm4lemc3M9WfN1js';
+  // Admin wachtwoord uit localStorage (ingesteld bij eerste gebruik)
+  APWD='WinterCup4026';localStorage.setItem('admin_pwd','WinterCup4026');
+  // Toon spelerslogin, niet configuratiescherm
+  const loggedIn=localStorage.getItem('speler_id');
+  if(loggedIn){
+    ingelogdSpelerId=loggedIn;
+    ingelogdSpelerNaam=localStorage.getItem('speler_naam')||'';
+    await laadAlles();
+  } else {
+    toonSpelerLogin();
+  }
+};
+
+async function laadAlles(){
+  try{
+    await Promise.all([laadSp(),laadR()]);
+    // These depend on allR being populated — run after await
+    await Promise.all([laadK(),laadEclectic(eclMode),laadBirds(birdMode),laadBlobs()]);
+  }
+  catch(e){
+    const msg=e.message||'';
+    if(msg.includes('Load failed')||msg.includes('Failed to fetch')||msg.includes('NetworkError')){
+      toast('Kan Supabase niet bereiken. Controleer je internetverbinding en of het Supabase-project actief is (gratis projecten pauzeren na inactiviteit).',true);
+    } else {
+      toast('Laad-fout: '+msg,true);
+    }
+  }
+}
+
+// SUPABASE
+async function sbFetch(path,opts={}){
+  let r;
+  try{
+    r=await fetch(SBU+'/rest/v1/'+path,{
+      method:opts.method||'GET',
+      headers:{'apikey':SBK,'Authorization':'Bearer '+SBK,'Content-Type':'application/json','Prefer':opts.prefer||'return=representation',...(opts.headers||{})},
+      body:opts.body!=null?JSON.stringify(opts.body):undefined
+    });
+  }catch(networkErr){
+    throw new Error('Netwerkfout ('+networkErr.message+'). Controleer verbinding en of je Supabase-project actief is op supabase.com.');
+  }
+  if(!r.ok){
+    let t='';try{t=await r.text();}catch(_){}
+    let msg=t;
+    try{const j=JSON.parse(t);msg=j.message||j.error||t;}catch(_){}
+    throw new Error(msg||'HTTP '+r.status);
+  }
+  if(r.status===204)return null;
+  return r.json();
+}
+const sbG=(t,q='')=>sbFetch(t+'?'+q);
+const sbP=(t,b)=>sbFetch(t,{method:'POST',body:b});
+const sbPa=(t,id,b)=>sbFetch(t+'?id=eq.'+id,{method:'PATCH',body:b,prefer:'return=representation'});
+const sbD=(t,id)=>sbFetch(t+'?id=eq.'+id,{method:'DELETE',prefer:'return=minimal'});
+
+// SETUP
+function getSQL(){return`-- Zegger Wintercup Schema
+create table if not exists spelers (
+  id uuid default gen_random_uuid() primary key,
+  naam text not null unique,
+  handicap numeric(4,1) not null,
+  telefoon text, email text,
+  pin text,
+  betaald boolean default false,
+  created_at timestamptz default now()
+);
+create table if not exists rondes (
+  id uuid default gen_random_uuid() primary key,
+  datum date not null unique,
+  type text not null default 'zomergreens',
+  status text not null default 'open',
+  starttijd text not null default '08:00',
+  seizoen text,
+  created_at timestamptz default now()
+);
+create table if not exists scores (
+  id uuid default gen_random_uuid() primary key,
+  ronde_id uuid references rondes(id) on delete cascade,
+  speler_id uuid references spelers(id) on delete cascade,
+  start_hcp numeric(4,1) not null,
+  hole_scores integer[] not null,
+  bruto integer, netto integer, stableford integer,
+  punten numeric(5,2) default 0,
+  birdies integer default 0, eagles integer default 0, blobs integer default 0,
+  nieuw_hcp numeric(4,1),
+  created_at timestamptz default now(),
+  unique(ronde_id, speler_id)
+);
+alter table spelers enable row level security;
+alter table rondes  enable row level security;
+alter table scores  enable row level security;
+create policy "allow all" on spelers for all using (true);
+create policy "allow all" on rondes  for all using (true);
+create policy "allow all" on scores  for all using (true);
+-- Run this if upgrading an existing database:
+-- alter table rondes add column if not exists starttijd text not null default '08:00';
+-- alter table spelers add column if not exists pin text;
+-- alter table spelers add column if not exists betaald boolean default false;
+-- alter table rondes add column if not exists seizoen text;`;}
+
+async function initSupabase(){
+  const u=document.getElementById('sbUrl').value.trim().replace(/\/$/,'');
+  const k=document.getElementById('sbKey').value.trim();
+  const p=document.getElementById('setupPwd').value.trim();
+  if(!u||!k||!p||p.length<6){toast('Vul alle velden in (wachtwoord min. 6 tekens)',true);return;}
+  SBU=u;SBK=k;APWD=p;
+  localStorage.setItem('sb_url',u);localStorage.setItem('sb_key',k);localStorage.setItem('admin_pwd',p);
+  // Test connection by fetching spelers table
+  try{
+    await sbG('spelers','limit=1');
+    // Connection works and tables exist — go straight to app
+    toast('Verbinding geslaagd!');
+    setTimeout(()=>startApp(),800);
+  }catch(e){
+    // Tables may not exist yet — show SQL setup
+    document.getElementById('sqlPre').textContent=getSQL();
+    document.getElementById('sqlBox').style.display='block';
+    toast('Opgeslagen. Voer het SQL-script uit om de database in te richten.');
+  }
+}
+function kopieerSQL(){navigator.clipboard.writeText(document.getElementById('sqlPre').textContent);toast('SQL gekopieerd!');}
+async function startApp(){
+  document.getElementById('setupPanel').style.display='none';
+  document.querySelector('.bnav').style.display='flex';
+  document.getElementById('panel-klassement').classList.add('active');
+  await laadAlles();
+}
+
+// NAV
+function showPanel(n,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+n).classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(n==='birdies') laadBirds(birdMode);
+  if(n==='blobs') laadBlobs();
+  if(n==='meer') laadOudeSeizoenen();
+}
+
+// ADMIN
+function openAdminLogin(){if(isAdmin){uitAdmin();return;}document.getElementById('moAdmin').classList.add('open');setTimeout(()=>document.getElementById('adminPwd').focus(),300);}
+function doAdminLogin(){
+  if(document.getElementById('adminPwd').value===APWD){
+    isAdmin=true;closeModal('moAdmin');
+    document.getElementById('adminArea').innerHTML='<button class="adm-badge" onclick="uitAdmin()" title="Klik om uit te loggen">⚙ ADMIN ✕</button>';
+    document.getElementById('nrBtn').style.display='block';
+    document.getElementById('uActTh').style.display='';
+    document.getElementById('spActTh').style.display='';
+    laadR();laadSp();toast('Welkom admin!');
+  }else toast('Onjuist wachtwoord',true);
+}
+function uitAdmin(){
+  isAdmin=false;
+  document.getElementById('adminArea').innerHTML='<button class="adm-btn" onclick="openAdminLogin()">Admin</button>';
+  toast('Admin uitgelogd');
+  document.getElementById('nrBtn').style.display='none';
+  document.getElementById('uActTh').style.display='none';
+  document.getElementById('spActTh').style.display='none';
+  document.getElementById('secScore').style.display='none';
+  laadR();laadSp();toast('Uitgelogd');
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+// SPELERS
+async function laadSp(){try{allSp=await sbG('spelers','order=naam');renderSp();}catch(e){console.error(e);}}
+function renderSp(){
+  const tb=document.getElementById('spBody');
+  // Show/hide admin-only header columns
+  ['spPinTh','spBetTh','spActTh','spTelTh','spEmailTh'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.style.display=isAdmin?'':'none';
+  });
+  const toevCard=document.getElementById('spelerToevoegenCard');
+  if(toevCard) toevCard.style.display=isAdmin?'':'none';
+  if(isAdmin){
+    // Admin view: naam, hcp, telefoon, email, pin, betaald checkbox, bewerken
+    if(!allSp.length){tb.innerHTML='<tr><td colspan="7"><div class="empty">Nog geen spelers</div></td></tr>';return;}
+    tb.innerHTML=allSp.map(s=>`<tr>
+      <td><strong>${s.naam}</strong></td>
+      <td><span class="hb">${fH(s.handicap)}</span></td>
+      <td style="font-size:.72rem;color:var(--tm)">${s.telefoon||'—'}</td>
+      <td style="font-size:.72rem;color:var(--tm)">${s.email||'—'}</td>
+      <td><span class="hb" style="background:#fff9c4;color:#5d4037">${s.pin||'—'}</span></td>
+      <td style="text-align:center"><input type="checkbox" ${s.betaald?'checked':''} onchange="setBetaald('${s.id}',this.checked)" style="width:20px;height:20px;cursor:pointer;accent-color:var(--gm)"></td>
+      <td><button class="btn bg bsm" onclick="bewerkSp('${s.id}')">✎</button></td>
+    </tr>`).join('');
+  } else {
+    // Non-admin view: alleen naam en hcp
+    if(!allSp.length){tb.innerHTML='<tr><td colspan="2"><div class="empty">Nog geen spelers</div></td></tr>';return;}
+    tb.innerHTML=allSp.map(s=>`<tr>
+      <td><strong>${s.naam}</strong></td>
+      <td><span class="hb">${fH(s.handicap)}</span></td>
+    </tr>`).join('');
+  }
+}
+async function registreerSpeler(){
+  const n=document.getElementById('rNaam').value.trim();
+  const h=parseFloat(document.getElementById('rHcp').value);
+  const pRaw=String(document.getElementById('rPin').value).trim();
+  const t=document.getElementById('rTel').value.trim();
+  const e=document.getElementById('rEmail').value.trim();
+  if(!n){toast('Naam is verplicht',true);return;}
+  if(isNaN(h)){toast('Vul een geldige handicap in',true);return;}
+  if(pRaw && (pRaw.length!==4||isNaN(parseInt(pRaw)))){toast('Pincode moet precies 4 cijfers zijn',true);return;}
+  const payload={naam:n,handicap:h,telefoon:t||null,email:e||null};
+  if(pRaw) payload.pin=pRaw;
+  try{
+    await sbP('spelers',payload);
+    toast('✓ '+n+' geregistreerd');
+    ['rNaam','rHcp','rPin','rTel','rEmail'].forEach(id=>document.getElementById(id).value='');
+    await laadSp();
+  }catch(err){
+    let msg=err.message||'Onbekende fout';
+    try{const j=JSON.parse(msg);msg=j.message||j.error||msg;}catch(_){}
+    if(msg.includes('unique')||msg.includes('duplicate')){
+      // Scroll up so player can see their name in the list
+      document.getElementById('panel-spelers').scrollTo({top:0,behavior:'smooth'});
+      toast('⚠️ '+n+' staat al in de spelerslijst hierboven.',true);
+      return;
+    }
+    if(msg.includes('column "pin" of relation'))msg='Pincode kolom ontbreekt in database. Voer SQL uit: ALTER TABLE spelers ADD COLUMN IF NOT EXISTS pin text;';
+    toast(msg,true);
+  }
+}
+function bewerkSp(id){
+  const s=allSp.find(x=>x.id===id);if(!s)return;
+  // Fill modal fields
+  document.getElementById('bsId').value=id;
+  document.getElementById('bsNaam').value=s.naam||'';
+  document.getElementById('bsHcp').value=s.handicap!=null?s.handicap:'';
+  document.getElementById('bsPin').value=s.pin||'';
+  document.getElementById('bsTel').value=s.telefoon||'';
+  document.getElementById('bsEmail').value=s.email||'';
+  document.getElementById('moBewerkSp').classList.add('open');
+  setTimeout(()=>document.getElementById('bsNaam').focus(),300);
+}
+
+
+async function verwijderSpeler(id){
+  const s=allSp.find(x=>x.id===id);if(!s)return;
+  if(!confirm(s.naam+' verwijderen? Dit kan niet ongedaan worden gemaakt.'))return;
+  try{
+    await sbD('spelers',id);
+    toast('✓ '+s.naam+' verwijderd');
+    closeModal('moBewerkSp');
+    await laadSp();
+  }catch(e){
+    let msg=e.message||'';
+    try{const j=JSON.parse(msg);msg=j.message||msg;}catch(_){}
+    if(msg.includes('foreign')||msg.includes('violates'))
+      toast('Kan speler niet verwijderen — er zijn nog scores gekoppeld. Verwijder eerst de scores.',true);
+    else toast('Fout: '+msg,true);
+  }
+}
+
+async function slaSpelerOp(){
+  const id=document.getElementById('bsId').value;
+  const n=document.getElementById('bsNaam').value.trim();
+  const h=parseFloat(document.getElementById('bsHcp').value);
+  const p=String(document.getElementById('bsPin').value).trim();
+  const t=document.getElementById('bsTel').value.trim();
+  const e=document.getElementById('bsEmail').value.trim();
+  if(!n){toast('Naam is verplicht',true);return;}
+  if(isNaN(h)){toast('Vul een geldige handicap in',true);return;}
+  if(p&&(p.length!==4||isNaN(parseInt(p)))){toast('Pincode moet 4 cijfers zijn',true);return;}
+  const payload={naam:n,handicap:h,telefoon:t||null,email:e||null};
+  if(p) payload.pin=p;
+  try{
+    await sbPa('spelers',id,payload);
+    toast('✓ Speler bijgewerkt');
+    closeModal('moBewerkSp');
+    await laadSp();
+  }catch(err){
+    let msg=err.message||'Onbekende fout';
+    try{const j=JSON.parse(msg);msg=j.message||j.error||msg;}catch(_){}
+    toast('Fout: '+msg,true);
+  }
+}
+
+async function setBetaald(id,val){
+  try{
+    await sbPa('spelers',id,{betaald:val});
+    const s=allSp.find(x=>x.id===id);
+    if(s){s.betaald=val;}
+    toast(val?'✓ Betaald':'Betaling verwijderd');
+  }catch(e){toast('Fout: '+e.message,true);}
+}
+
+// RONDES
+async function laadR(){try{allR=await sbG('rondes','order=datum.desc');renderR();laadRondeStats();}catch(e){console.error(e);}}
+function renderR(){
+  const c=document.getElementById('rondesLijst');
+  if(!allR.length){c.innerHTML='<div class="empty" style="background:white;border-radius:12px;padding:28px">Geen ronden</div>';return;}
+  const szR=activSeizoen||huidigSeizoen();
+  const teTonenRondes=getActivRondes();
+  if(!teTonenRondes.length){c.innerHTML='<div class="empty" style="background:white;border-radius:12px;padding:28px">Geen ronden in seizoen '+szR+'</div>';return;}
+  c.innerHTML=`<div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--tl);margin-bottom:10px;padding:0 2px">Seizoen ${szR}</div>`+
+  teTonenRondes.map(r=>{
+    const ty=r.type==='wintergreens'?'❄️ Wintergreens':'☀️ Zomergreens';
+    const stats=rondeStats[r.id]||{};
+    const deelnStr=stats.deeln!=null?`${stats.deeln} deelnemers`:'';
+    const winnaarStr=stats.winnaar?`🏆 ${stats.winnaar}`:'';
+    // Status pill: afgesloten rounds show "Bekijk" instead of "Afgesloten"
+    const sl={open:'so',afgesloten:'sc2',afgelast:'sa'}[r.status]||'so';
+    const st=r.status==='afgesloten'?'Bekijk ronde':r.status==='afgelast'?'Afgelast':'Open';
+    return`<div class="rc">
+      <div class="rch" onclick="toonUitslag('${r.id}')">
+        <div>
+          <div class="rd">${fD(r.datum)}</div>
+          <div class="rm">${[ty,deelnStr,winnaarStr].filter(Boolean).join(' · ')}</div>
+        </div>
+        <span class="sp ${sl}">${st}</span>
+      </div>
+      <div class="ra" style="display:flex;gap:8px;padding:10px 15px;border-top:1px solid var(--cd);background:var(--cr);flex-wrap:wrap">
+        ${r.status==='open'?`<button class="btn bp bsm" onclick="${isAdmin?`openScore('${r.id}')`:`openPinModal('${r.id}')`};event.stopPropagation()">+ Score</button>`:''}
+        ${isAdmin?`<button class="btn bg bsm" onclick="openStatus('${r.id}');event.stopPropagation()">Beheren</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function openNieuweRonde(){
+  const nu = new Date();
+  document.getElementById('nrDatum').value=nu.toISOString().slice(0,10);
+  // Auto-fill seizoen: oct-march = current/next year
+  const m=nu.getMonth(); // 0=jan
+  const y=nu.getFullYear();
+  const seizoen=m>=9?y+'-'+(y+1):(y-1)+'-'+y; // oct(9)+ = new season
+  document.getElementById('nrSeizoen').value=seizoen;
+  document.getElementById('moRonde').classList.add('open');
+}
+async function maakNieuweRonde(){
+  const d=document.getElementById('nrDatum').value;
+  const t=document.getElementById('nrType').value;
+  const st=document.getElementById('nrTijd').value||'08:00';
+  const sz=document.getElementById('nrSeizoen').value.trim()||bepaalSeizoen(d);
+  if(!d){toast('Kies een datum',true);return;}
+  try{
+    await sbP('rondes',{datum:d,type:t,status:'open',starttijd:st,seizoen:sz});
+    toast('Ronde aangemaakt voor '+fD(d));closeModal('moRonde');await laadR();
+  }catch(e){toast(e.message.includes('unique')?'Al een ronde op deze datum':'Fout: '+e.message,true);}
+}
+
+// STATUS MODAL
+function openStatus(id){
+  const r=allR.find(x=>x.id===id);if(!r)return;
+  document.getElementById('smTitle').textContent=fD(r.datum);
+  document.getElementById('smSub').textContent=(r.type==='wintergreens'?'❄️ Wintergreens':'☀️ Zomergreens')+' · Status: '+({open:'Open',afgesloten:'Afgesloten',afgelast:'Afgelast'}[r.status]||r.status);
+  const bb=document.getElementById('smBtns');bb.innerHTML='';
+  const add=(lbl,cls,fn)=>{const b=document.createElement('button');b.className='btn '+cls+' bf';b.textContent=lbl;b.onclick=fn;bb.appendChild(b);};
+  if(r.status!=='afgesloten') add('✓ Ronde Afsluiten (punten verdelen)','bp',()=>sluitRondeAf(id));
+  if(r.status==='afgesloten')  add('↩ Ronde Heropenen (scores aanpassen)','bbl',()=>heropnRonde(id));
+  if(r.status!=='afgelast')    add('✗ Markeren als Afgelast','bd',()=>markAfgelast(id));
+  if(r.status==='afgelast')    add('↩ Afgelast ongedaan maken','bg',()=>setStatus(id,'open'));
+  add('🗑 Ronde Verwijderen','bd',()=>verwijderRonde(id));
+  document.getElementById('moStatus').classList.add('open');
+}
+
+// Punten verdeling: positie 1=15, 2=14, ..., 15=1, 16+=0. Gelijke scores delen gemiddelde.
+function berekenPunten(sfdArr){
+  const n=sfdArr.length,pts=new Array(n).fill(0);
+  let i=0;
+  while(i<n){
+    const val=sfdArr[i];let j=i;
+    while(j<n&&sfdArr[j]===val)j++;
+    let tot=0;
+    for(let k=i;k<j;k++)tot+=Math.max(0,16-(k+1)); // pos k+1 → 16-(k+1)=15-k
+    const gem=tot/(j-i);
+    for(let k=i;k<j;k++)pts[k]=gem;
+    i=j;
+  }
+  return pts;
+}
+
+async function sluitRondeAf(id){
+  closeModal('moStatus');
+  try{
+    const scores=await sbG('scores','ronde_id=eq.'+id+'&order=stableford.desc');
+    if(!scores.length){toast('Geen scores om af te sluiten',true);return;}
+    const punten=berekenPunten(scores.map(s=>s.stableford));
+    for(let i=0;i<scores.length;i++) await sbPa('scores',scores[i].id,{punten:punten[i]});
+    await sbPa('rondes',id,{status:'afgesloten'});
+    toast('Ronde afgesloten en punten verdeeld!');
+    await laadR();laadK();if(curId===id)toonUitslag(id);
+  }catch(e){toast('Fout: '+e.message,true);}
+}
+async function heropnRonde(id){
+  if(!confirm('Ronde heropenen? Punten worden gereset.'))return;
+  closeModal('moStatus');
+  try{
+    const scores=await sbG('scores','ronde_id=eq.'+id);
+    for(const sc of scores) await sbPa('scores',sc.id,{punten:0});
+    await sbPa('rondes',id,{status:'open'});
+    toast('Ronde heropend');await laadR();laadK();
+  }catch(e){toast('Fout: '+e.message,true);}
+}
+async function markAfgelast(id){
+  if(!confirm('Ronde als afgelast markeren?'))return;
+  closeModal('moStatus');await setStatus(id,'afgelast');
+}
+async function setStatus(id,st){
+  try{await sbPa('rondes',id,{status:st});toast('Status: '+st);await laadR();laadK();}
+  catch(e){toast('Fout: '+e.message,true);}
+}
+async function verwijderRonde(id){
+  const r=allR.find(x=>x.id===id);if(!r)return;
+  if(!confirm('Ronde van '+fD(r.datum)+' definitief verwijderen? Alle scores worden ook verwijderd.'))return;
+  closeModal('moStatus');
+  try{
+    await sbD('rondes',id);
+    toast('Ronde verwijderd');
+    sluitUitslag();
+    await laadR();laadK();laadEclectic(eclMode);laadBirds();laadBlobs();
+  }catch(e){toast('Fout: '+e.message,true);}
+}
+
+// UITSLAG
+async function toonUitslag(id){
+  curId=id;curRonde=allR.find(r=>r.id===id);
+  const sec=document.getElementById('secUitslag');
+  sec.style.display='block';
+  document.getElementById('secScore').style.display='none';
+  document.getElementById('uTitle').textContent=fD(curRonde.datum)+(curRonde.type==='wintergreens'?' ❄️':' ☀️');
+  document.getElementById('uActTh').style.display=isAdmin?'':'none';
+  try{
+    const scRaw=await sbG('scores','ronde_id=eq.'+id+'&order=stableford.desc');
+    // Recalculate all scores live to fix historical DB errors
+    const sc=scRaw.map(s=>recalcScore(s,curRonde)).sort((a,b)=>b.stableford-a.stableford);
+    const sm=Object.fromEntries(allSp.map(s=>[s.id,s.naam]));
+    const isAf=curRonde.status==='afgesloten';
+    const tb=document.getElementById('uBody');
+    if(!sc.length){tb.innerHTML='<tr><td colspan="10"><div class="empty">Nog geen scores</div></td></tr>';}
+    else tb.innerHTML=sc.map((s,i)=>`<tr>
+      <td><span class="rb ${i<3?'r'+(i+1):'ro'}">${i+1}</span></td>
+      <td style="font-size:.78rem"><strong><a href="#" onclick="toonScorekaart('${s.id}');return false" style="color:var(--gd);text-decoration:none">${sm[s.speler_id]||'?'}</a></strong></td>
+      <td><span class="hb">${fH(s.start_hcp)}</span></td>
+      <td><strong>${s.stableford??'—'}</strong></td>
+      <td>${isAf?`<span class="pb">${fP(s.punten)}</span>`:'—'}</td>
+      <td>${s.bruto??'—'}</td><td>${brutoBirds(s)}</td><td>${s.blobs??0}</td>
+      <td><span class="hb">${fH(s.nieuw_hcp)}</span></td>
+      ${isAdmin?`<td style="display:flex;gap:4px">
+        <button class="btn bg bsm" onclick="bewerkScore('${s.id}','${s.speler_id}')">✎</button>
+        <button class="btn bd bsm" onclick="delScore('${s.id}')">✕</button>
+      </td>`:'<td></td>'}
+    </tr>`).join('');
+    sec.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){toast('Fout: '+e.message,true);}
+}
+function sluitUitslag(){document.getElementById('secUitslag').style.display='none';curId=null;curRonde=null;}
+async function delScore(id){
+  if(!confirm('Score verwijderen?'))return;
+  try{await sbD('scores',id);toast('Score verwijderd');await laadAlles();if(curId)toonUitslag(curId);}
+  catch(e){toast('Fout: '+e.message,true);}
+}
+
+
+// PIN VERIFICATIE
+function openPinModal(rondeId){
+  curId=rondeId;curRonde=allR.find(r=>r.id===rondeId);
+  // Check time window first
+  const check=magScoreInvoeren(curRonde);
+  if(!check.ok){toast(check.reden,true);return;}
+  // Populate speler select
+  const sel=document.getElementById('pinSpelerSelect');
+  sel.innerHTML='<option value="">— Kies je naam —</option>'+
+    allSp.map(s=>`<option value="${s.id}">${s.naam}</option>`).join('');
+  document.getElementById('pinInput').value='';
+  document.getElementById('pinFout').style.display='none';
+  document.getElementById('moPin').classList.add('open');
+  setTimeout(()=>document.getElementById('pinSpelerSelect').focus(),300);
+}
+
+
+async function bevestigHcpSeizoen(){
+  const hcp=parseFloat(document.getElementById('hcpSeizoenInput').value);
+  if(isNaN(hcp)){toast('Ongeldige handicap',true);return;}
+  const id=window._pinSpelerId;
+  if(!id){closeModal('moHcpSeizoen');return;}
+  try{
+    await sbPa('spelers',id,{handicap:hcp});
+    // Update local cache
+    const sp=allSp.find(s=>s.id===id);
+    if(sp) sp.handicap=hcp;
+    closeModal('moHcpSeizoen');
+    toast('Handicap bijgewerkt naar '+fH(hcp));
+    openScore(curId, id);
+  }catch(e){toast('Fout: '+e.message,true);}
+}
+
+async function bevestigPin(){
+  const sel=document.getElementById('pinSpelerSelect');
+  const pin=String(document.getElementById('pinInput').value).trim();
+  const fout=document.getElementById('pinFout');
+  if(!sel.value){toast('Kies je naam',true);return;}
+  if(!pin||pin.length!==4){toast('Voer je 4-cijferige pincode in',true);return;}
+  const speler=allSp.find(s=>s.id===sel.value);
+  if(!speler||speler.pin!==pin){
+    fout.style.display='block';
+    document.getElementById('pinInput').value='';
+    document.getElementById('pinInput').focus();
+    return;
+  }
+  fout.style.display='none';
+  closeModal('moPin');
+  // Check if this player already has a score for this round
+  try{
+    const bestaand=await sbG('scores','ronde_id=eq.'+curId+'&speler_id=eq.'+speler.id);
+    if(bestaand.length>0){
+      toast('Je hebt al een score voor deze ronde ingevoerd.',true);
+      return;
+    }
+  }catch(e){}
+  // Check if this is first round of new season for this player
+  const huidig=huidigSeizoen();
+  const rondesHuidigSeizoen=allR.filter(r=>(r.seizoen||bepaalSeizoen(r.datum))===huidig&&r.status==='afgesloten');
+  let eersteVanSeizoen=true;
+  if(rondesHuidigSeizoen.length){
+    try{
+      const eerder=await sbG('scores','speler_id=eq.'+speler.id+'&ronde_id=in.('+rondesHuidigSeizoen.map(r=>r.id).join(',')+')'+'&limit=1');
+      if(eerder.length) eersteVanSeizoen=false;
+    }catch(e){}
+  }
+  if(eersteVanSeizoen&&rondesHuidigSeizoen.length===0&&allR.filter(r=>(r.seizoen||bepaalSeizoen(r.datum))===huidig).length>0){
+    // First round of season — ask to confirm hcp
+    window._pinSpelerId=speler.id;
+    document.getElementById('hcpSeizoenInput').value=speler.handicap;
+    document.getElementById('moHcpSeizoen').classList.add('open');
+    return;
+  }
+  // Open score entry pre-selected for this player
+  openScore(curId, speler.id);
+}
+
+
+
+function switchSeizoen(sz){
+  activSeizoen=sz;
+  const huidig=huidigSeizoen();
+  const banner=document.getElementById('szBanner');
+  if(sz&&sz!==huidig){
+    document.getElementById('szBannerLabel').textContent='Seizoen '+sz;
+    banner.classList.add('active');
+  } else {
+    banner.classList.remove('active');
+    activSeizoen=null;
+  }
+  // Reload all tabs for new seizoen context
+  laadK();
+  laadEclectic(eclMode);
+  laadBirds(birdMode);
+  laadBlobs();
+  renderR();
+  renderSp();
+  // Close oud seizoen view in Meer
+  laadOudeSeizoenen();
+}
+
+function resetNaarHuidigSeizoen(){
+  switchSeizoen(null);
+  // Navigate back to klassement
+  const tab=document.querySelector('.ntab[onclick*="klassement"]');
+  if(tab) showPanel('klassement',tab);
+}
+
+// Returns rondes filtered for the active seizoen
+function getActivRondes(){
+  const sz=activSeizoen||huidigSeizoen();
+  return allR.filter(r=>(r.seizoen||bepaalSeizoen(r.datum))===sz);
+}
+
+
+// RONDE STATS CACHE (deelnemers + winnaar per ronde)
+let rondeStats = {};
+
+async function laadRondeStats(){
+  const ids = allR.map(r=>r.id);
+  if(!ids.length) return;
+  try{
+    // Get count + top scorer per round in one query
+    const sc = await sbG('scores',
+      'ronde_id=in.('+ids.join(',')+')'+'&select=ronde_id,speler_id,stableford'
+    );
+    const sm = Object.fromEntries(allSp.map(s=>[s.id,s.naam]));
+    // Group by ronde
+    const per = {};
+    sc.forEach(s=>{
+      if(!per[s.ronde_id]) per[s.ronde_id]=[];
+      per[s.ronde_id].push(s);
+    });
+    rondeStats = {};
+    Object.entries(per).forEach(([rid, scores])=>{
+      const deeln = scores.length;
+      // Winnaar = highest stableford (only for afgesloten rounds)
+      const ronde = allR.find(r=>r.id===rid);
+      let winnaar = null;
+      if(ronde && ronde.status==='afgesloten'){
+        const top = scores.reduce((a,b)=>b.stableford>a.stableford?b:a, scores[0]);
+        winnaar = sm[top.speler_id] || null;
+      }
+      rondeStats[rid] = {deeln, winnaar};
+    });
+    // Also mark afgelast rounds with 0 deelnemers
+    allR.filter(r=>r.status==='afgelast').forEach(r=>{
+      rondeStats[r.id] = {deeln:0, winnaar:null};
+    });
+    renderR();
+  }catch(e){ console.error('laadRondeStats:', e); }
+}
+
+
+// SPELER LOGIN
+let ingelogdSpelerId = null;
+let ingelogdSpelerNaam = null;
+
+function toonSpelerLogin(){
+  document.getElementById('spelersLoginScherm').style.display='flex';
+  document.querySelector('.bnav').style.display='none';
+  // Load spelers for dropdown (needs SBU/SBK which are now hard-coded)
+  sbG('spelers','order=naam&select=id,naam').then(spelers=>{
+    const sel=document.getElementById('loginNaamSelect');
+    if(!spelers||!spelers.length){
+      sel.innerHTML='<option value="">— Geen spelers gevonden —</option>';
+      return;
+    }
+    sel.innerHTML='<option value="">— Kies je naam —</option>'+
+      spelers.map(s=>`<option value="${s.id}" data-pin="${s.pin||''}">${s.naam}</option>`).join('');
+  }).catch(e=>{
+    const sel=document.getElementById('loginNaamSelect');
+    sel.innerHTML='<option value="">— Fout bij laden spelers —</option>';
+    const fout=document.getElementById('loginFout');
+    fout.textContent='Kan spelers niet laden: '+e.message;
+    fout.style.display='block';
+  });
+}
+
+async function doSpelerLogin(){
+  const sel=document.getElementById('loginNaamSelect');
+  const pin=String(document.getElementById('loginPin').value).trim();
+  const fout=document.getElementById('loginFout');
+  fout.style.display='none';
+  if(!sel.value){fout.textContent='Kies je naam';fout.style.display='block';return;}
+  if(!pin||pin.length!==4){fout.textContent='Voer je 4-cijferige pincode in';fout.style.display='block';return;}
+  try{
+    // Use cached pin from option data attribute if available
+    const opt=sel.options[sel.selectedIndex];
+    const cachedPin=opt?opt.dataset.pin:'';
+    let pinOk = cachedPin && cachedPin===pin;
+    let spelerId=sel.value, spelerNaam=opt?opt.textContent:'';
+    if(!pinOk){
+      // Fallback: verify via DB
+      const res=await sbG('spelers','id=eq.'+sel.value+'&select=id,naam,pin');
+      pinOk = res.length && res[0].pin===pin;
+      if(res.length){spelerNaam=res[0].naam;}
+    }
+    if(!pinOk){
+      fout.textContent='Onjuiste pincode. Probeer opnieuw.';
+      fout.style.display='block';
+      document.getElementById('loginPin').value='';
+      return;
+    }
+    // Login geslaagd
+    ingelogdSpelerId=spelerId;
+    ingelogdSpelerNaam=spelerNaam;
+    localStorage.setItem('speler_id',spelerId);
+    localStorage.setItem('speler_naam',spelerNaam);
+    document.getElementById('spelersLoginScherm').style.display='none';
+    document.querySelector('.bnav').style.display='flex';
+    await laadAlles();
+    toast('Welkom, '+res[0].naam+'! 👋');
+  }catch(e){
+    fout.textContent='Fout: '+e.message;
+    fout.style.display='block';
+  }
+}
+
+function uitloggenSpeler(){
+  localStorage.removeItem('speler_id');
+  localStorage.removeItem('speler_naam');
+  ingelogdSpelerId=null;
+  ingelogdSpelerNaam=null;
+  // Reset admin too
+  if(isAdmin) uitAdmin();
+  location.reload();
+}
+
+// SEIZOEN HELPERS
+function bepaalSeizoen(datumStr){
+  if(!datumStr) return null;
+  const d=new Date(datumStr);
+  const m=d.getMonth(); // 0=jan
+  const y=d.getFullYear();
+  return m>=9?y+'-'+(y+1):(y-1)+'-'+y;
+}
+
+function huidigSeizoen(){
+  const nu=new Date();
+  const m=nu.getMonth();
+  const y=nu.getFullYear();
+  return m>=9?y+'-'+(y+1):(y-1)+'-'+y;
+}
+
+// OUDE SEIZOENEN
+async function laadOudeSeizoenen(){
+  const huidig=huidigSeizoen();
+  const el=document.getElementById('oudeSeizoenenLijst');
+  // Group allR by seizoen
+  const seizoenen={};
+  allR.forEach(r=>{
+    const sz=r.seizoen||bepaalSeizoen(r.datum)||'Onbekend';
+    if(!seizoenen[sz]) seizoenen[sz]=[];
+    seizoenen[sz].push(r);
+  });
+  const oud=Object.keys(seizoenen).filter(s=>s!==huidig).sort().reverse();
+  if(!oud.length){
+    el.innerHTML='<div class="empty">Geen oude seizoenen</div>';
+    return;
+  }
+  el.innerHTML=oud.map(sz=>{
+    const rondes=seizoenen[sz];
+    const afg=rondes.filter(r=>r.status==='afgesloten').length;
+    return`<div style="padding:10px 0;border-bottom:1px solid var(--cd)">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <strong style="font-family:'Playfair Display',serif">${sz}</strong>
+          <div style="font-size:.7rem;color:var(--tl);font-family:'IBM Plex Mono',monospace;margin-top:2px">${afg} ronden gespeeld</div>
+        </div>
+        <button class="btn bg bsm" onclick="toonOudSeizoen('${sz}')">Bekijken</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function toonOudSeizoen(seizoen){
+  switchSeizoen(seizoen);
+  // Navigate to klassement to show the season
+  const tab=document.querySelector('.ntab[onclick*="klassement"]');
+  if(tab) showPanel('klassement',tab);
+  // Load klassement for that seizoen
+  // switching handled by switchSeizoen above
+}
+
+// SCORE INVOER
+
+// Check if a player (non-admin) may enter a score for a given round
+function magScoreInvoeren(ronde){
+  // Admins always can
+  if(isAdmin)return{ok:true};
+  // Round must be open
+  if(ronde.status!=='open')return{ok:false,reden:'Deze ronde is al afgesloten.'};
+  // Must be the correct calendar day
+  const now=new Date();
+  const rondeDate=new Date(ronde.datum+'T00:00:00');
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const rDay=new Date(rondeDate.getFullYear(),rondeDate.getMonth(),rondeDate.getDate());
+  if(today.getTime()!==rDay.getTime())return{ok:false,reden:'Scores mogen alleen op de dag van de ronde worden ingevoerd.'};
+  // Must be at or after the start time
+  const [h,m]=(ronde.starttijd||'08:00').split(':').map(Number);
+  const startMs=h*60+m;
+  const nowMs=now.getHours()*60+now.getMinutes();
+  if(nowMs<startMs){
+    const pad=n=>String(n).padStart(2,'0');
+    return{ok:false,reden:`Scores mogen pas vanaf ${pad(h)}:${pad(m)} worden ingevoerd.`};
+  }
+  return{ok:true};
+}
+
+function openScore(id, preselectedSpelerId=null){
+  curId=id;curRonde=allR.find(r=>r.id===id);
+  // Non-admin: enforce time window
+  if(!isAdmin){
+    const check=magScoreInvoeren(curRonde);
+    if(!check.ok){toast(check.reden,true);return;}
+  }
+  const sec=document.getElementById('secScore');
+  sec.style.display='block';
+  document.getElementById('secUitslag').style.display='none';
+  document.getElementById('scoreTitel').textContent='Score — '+fD(curRonde.datum);
+  const sel=document.getElementById('spSel');
+  sel.innerHTML='<option value="">— Kies speler —</option>'+
+    allSp.map(s=>`<option value="${s.id}" data-hcp="${s.handicap}">${s.naam} (${fH(s.handicap)})</option>`).join('');
+  if(preselectedSpelerId){
+    sel.value=preselectedSpelerId;
+    renderScoreInputs();
+  } else {
+    document.getElementById('scoreWrap').style.display='none';
+    document.getElementById('ssumm').style.display='none';
+  }
+  sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function sluitScore(){document.getElementById('secScore').style.display='none';}
+
+function renderScoreInputs(){
+  const sel=document.getElementById('spSel');
+  const wrap=document.getElementById('scoreWrap');
+  if(!sel.value){wrap.style.display='none';return;}
+  const hcp=parseFloat(sel.options[sel.selectedIndex].dataset.hcp);
+  const isW=curRonde&&curRonde.type==='wintergreens';
+  const pH=isW?Math.round(hcp*.75):hcp;
+  wrap.style.display='block';
+  ['sg1','sg2'].forEach(id=>document.getElementById(id).innerHTML='');
+  for(let i=0;i<18;i++){
+    const sh=shots(pH,SI[i]);const mx=PAR[i]+2+sh;
+    const box=document.createElement('div');box.className='hb2';
+    box.innerHTML=`<span class="hn">H${i+1}</span><span class="hp">p${PAR[i]}${sh>0?'+'+sh:''}</span>
+      <input type="number" id="h${i}" inputmode="numeric" min="1" max="${mx}" placeholder="${PAR[i]}"
+        oninput="onHole(${i},${PAR[i]},${sh},${mx})">
+      <span class="hpts" id="pt${i}"></span>`;
+    document.getElementById(i<9?'sg1':'sg2').appendChild(box);
+  }
+  document.getElementById('ssumm').style.display='none';
+}
+
+function shots(pH,si){
+  const abs=Math.abs(pH);const base=Math.floor(abs/18);const extra=Math.round((abs%18)*2)/2;
+  const s=base+(si<=Math.round(extra)?1:0);
+  return pH<0?-s:s;
+}
+function sfp(score,par,sh){
+  const n=score-par-sh;
+  if(n>=2)return 0;if(n===1)return 1;if(n===0)return 2;if(n===-1)return 3;if(n===-2)return 4;return 5;
+}
+function onHole(i,par,sh,mx){
+  const inp=document.getElementById('h'+i);const pts=document.getElementById('pt'+i);
+  let v=parseInt(inp.value);
+  if(isNaN(v)||v<1){pts.textContent='';inp.className='';return;}
+  if(v>mx){inp.value=v=mx;}
+  const p=sfp(v,par,sh);const n=v-par-sh;
+  inp.className=n<=-2?'eagle':n===-1?'birdie':p===0?'blob':'';
+  pts.textContent=p+'pt';
+  actualiseer();
+}
+function actualiseer(){
+  const sel=document.getElementById('spSel');if(!sel.value)return;
+  const hcp=parseFloat(sel.options[sel.selectedIndex].dataset.hcp);
+  const isW=curRonde&&curRonde.type==='wintergreens';
+  const pH=isW?Math.round(hcp*.75):hcp;
+  let bruto=0,sf=0,ok=true;
+  for(let i=0;i<18;i++){const v=parseInt(document.getElementById('h'+i)?.value);if(isNaN(v)){ok=false;continue;}const sh=shots(pH,SI[i]);bruto+=v;sf+=sfp(v,PAR[i],sh);}
+  if(!ok)return;
+  const nh=nHcp(hcp,sf);
+  const s=document.getElementById('ssumm');s.style.display='grid';
+  document.getElementById('sBruto').textContent=bruto;
+  document.getElementById('sSfd').textContent=sf;
+  document.getElementById('sHcp').textContent=fH(nh);
+}
+
+async function slaScoreOp(){
+  // Re-check time window at save time (in case page was left open)
+  if(!isAdmin){
+    const check=magScoreInvoeren(curRonde);
+    if(!check.ok){toast(check.reden,true);return;}
+  }
+  const sel=document.getElementById('spSel');
+  if(!sel.value){toast('Kies een speler',true);return;}
+  const spId=sel.value;
+  const hcp=parseFloat(sel.options[sel.selectedIndex].dataset.hcp);
+  const isW=curRonde&&curRonde.type==='wintergreens';
+  const pH=isW?Math.round(hcp*.75):hcp;
+  const hs=[];
+  for(let i=0;i<18;i++){const v=parseInt(document.getElementById('h'+i)?.value);if(isNaN(v)||v<1){toast('Vul alle 18 holes in',true);return;}hs.push(v);}
+  let bruto=0,sf=0,birds=0,eagles=0,blobs=0;
+  for(let i=0;i<18;i++){
+    const sh=shots(pH,SI[i]);const p=sfp(hs[i],PAR[i],sh);const brutoDiff=hs[i]-PAR[i];
+    bruto+=hs[i];sf+=p;
+    if(brutoDiff<=-2)eagles++;else if(brutoDiff===-1)birds++;
+    if(p===0)blobs++;
+  }
+  const netto=bruto-Math.round(pH);const nh=nHcp(hcp,sf);
+  const editId=document.getElementById('spSel').dataset.editScoreId||null;
+  try{
+    if(editId){
+      // Update existing score
+      await sbPa('scores',editId,{hole_scores:hs,bruto,netto,stableford:sf,birdies:birds,eagles,blobs,nieuw_hcp:nh});
+      delete document.getElementById('spSel').dataset.editScoreId;
+      const saveBtn=document.querySelector('#secScore .btn.bp.bf');
+      if(saveBtn)saveBtn.textContent='Score Opslaan';
+      toast('✓ Score bijgewerkt. Nieuw hcp: '+fH(nh));
+    } else {
+      await sbP('scores',{ronde_id:curId,speler_id:spId,start_hcp:hcp,hole_scores:hs,bruto,netto,stableford:sf,punten:0,birdies:birds,eagles,blobs,nieuw_hcp:nh});
+      toast('✓ Score opgeslagen. Nieuw hcp: '+fH(nh));
+    }
+    await sbPa('spelers',spId,{handicap:nh});
+    document.getElementById('secScore').style.display='none';
+    await laadSp();toonUitslag(curId);await Promise.all([laadK(),laadEclectic(eclMode),laadBirds(birdMode),laadBlobs()]);
+  }catch(e){toast(e.message.includes('unique')?'Score bestaat al':'Fout: '+e.message,true);}
+}
+
+
+// SCORE BEWERKEN (admin)
+async function bewerkScore(scoreId, spelerId){
+  try{
+    const sc=await sbG('scores','id=eq.'+scoreId);
+    if(!sc.length){toast('Score niet gevonden',true);return;}
+    const bestaand=sc[0];
+    // Open score entry for this round/player
+    openScore(curId, spelerId);
+    // Wait for DOM to render then fill in existing scores
+    setTimeout(()=>{
+      if(!bestaand.hole_scores)return;
+      const hcp=parseFloat(document.getElementById('spSel').options[document.getElementById('spSel').selectedIndex]?.dataset?.hcp||0);
+      const isW=curRonde&&curRonde.type==='wintergreens';
+      const pH=isW?Math.round(hcp*.75):hcp;
+      bestaand.hole_scores.forEach((v,i)=>{
+        const inp=document.getElementById('h'+i);
+        if(inp){
+          inp.value=v;
+          const sh=shots(pH,SI[i]);
+          const mx=PAR[i]+2+sh;
+          onHole(i,PAR[i],sh,mx);
+        }
+      });
+      // Override save to update instead of insert
+      document.getElementById('spSel').dataset.editScoreId=scoreId;
+      // Change button label
+      const saveBtn=document.querySelector('#secScore .btn.bp.bf');
+      if(saveBtn)saveBtn.textContent='Score Bijwerken';
+    },200);
+  }catch(e){toast('Fout: '+e.message,true);}
+}
+
+// HANDICAP
+function nHcp(hcp,sf){
+  let d=0;if(sf>36)d=-(sf-36)*.5;else if(sf<34)d=.5;
+  return Math.round((hcp+d)*2)/2;
+}
+
+// KLASSEMENT
+async function laadK(){
+  try{
+    const afg=getActivRondes().filter(r=>r.status==='afgesloten');
+    document.getElementById('statR').textContent=afg.length;
+    const szLabel=activSeizoen||huidigSeizoen();
+    if(!afg.length){document.getElementById('kBody').innerHTML='<tr><td colspan="9"><div class="empty">Nog geen afgesloten ronden in seizoen '+szLabel+'</div></td></tr>';return;}
+    const scRawK=await sbG('scores','ronde_id=in.('+afg.map(r=>r.id).join(',')+')'+'&select=speler_id,stableford,punten,hole_scores,start_hcp,ronde_id');
+    const sm=Object.fromEntries(allSp.map(s=>[s.id,s]));
+    // Recalculate stableford live, then recalculate punten per round
+    const rondeMap=Object.fromEntries(afg.map(r=>[r.id,r]));
+    const scK=scRawK.map(s=>recalcScore(s,rondeMap[s.ronde_id]));
+    // Recalculate punten per round based on correct stableford
+    function berekenPuntenLive(arr){
+      const n=arr.length;const pts=new Array(n).fill(0);
+      let i=0;
+      while(i<n){
+        const val=arr[i].stableford;let j=i;
+        while(j<n&&arr[j].stableford===val)j++;
+        const tot=Array.from({length:j-i},(_,k)=>Math.max(0,16-(i+k+1))).reduce((a,b)=>a+b,0);
+        const gem=tot/(j-i);
+        for(let k=i;k<j;k++)pts[k]=gem;
+        i=j;
+      }
+      return pts;
+    }
+    // Group by ronde, sort by stableford desc, assign punten
+    const rondeGroups={};
+    scK.forEach(s=>{if(!rondeGroups[s.ronde_id])rondeGroups[s.ronde_id]=[];rondeGroups[s.ronde_id].push(s);});
+    Object.values(rondeGroups).forEach(arr=>{
+      arr.sort((a,b)=>b.stableford-a.stableford);
+      const pts=berekenPuntenLive(arr);
+      arr.forEach((s,i)=>s.punten=pts[i]);
+    });
+    const per={};
+    scK.forEach(s=>{if(!per[s.speler_id])per[s.speler_id]=[];per[s.speler_id].push(s.punten||0);});
+    const rows=Object.entries(per).map(([id,pts])=>{
+      const sorted=[...pts].sort((a,b)=>b-a);
+      const b5=sorted.slice(0,5);const tot=b5.reduce((a,b)=>a+b,0);
+      return{id,naam:sm[id]?.naam||id,hcp:sm[id]?.handicap,b5,tot};
+    }).sort((a,b)=>b.tot-a.tot);
+    if(rows.length)document.getElementById('statL').textContent=rows[0].naam.split(' ')[0];
+    document.getElementById('kBody').innerHTML=rows.map((r,i)=>{
+      const t5=r.b5.map(p=>`<td>${fP(p)}</td>`).join('');
+      const pad=Array(5-r.b5.length).fill('<td>—</td>').join('');
+      return`<tr><td><span class="rb ${i<3?'r'+(i+1):'ro'}">${i+1}</span></td>
+        <td style="font-size:.78rem"><strong>${r.naam}</strong></td>
+        <td><span class="hb">${fH(r.hcp)}</span></td>
+        ${t5}${pad}<td><strong>${fP(r.tot)}</strong></td></tr>`;
+    }).join('');
+  }catch(e){console.error(e);}
+}
+
+// ECLECTIC
+async function laadEclectic(mode){
+  eclMode=mode;
+  document.getElementById('eBr').className=mode==='bruto'?'btn bp bsm':'btn bg bsm';
+  document.getElementById('eNe').className=mode==='netto'?'btn bp bsm':'btn bg bsm';
+  try{
+    const zom=getActivRondes().filter(r=>r.type==='zomergreens'&&r.status==='afgesloten');
+    if(!zom.length){document.getElementById('eBody').innerHTML='<tr><td colspan="22"><div class="empty">Geen afgesloten zomergreens ronden</div></td></tr>';return;}
+    const sc=await sbG('scores','ronde_id=in.('+zom.map(r=>r.id).join(',')+')'+'&select=speler_id,hole_scores,start_hcp');
+    const sm=Object.fromEntries(allSp.map(s=>[s.id,s]));
+    const per={};
+    sc.forEach(s=>{
+      if(!s.hole_scores)return;
+      if(!per[s.speler_id])per[s.speler_id]={naam:sm[s.speler_id]?.naam||'?',hcp:s.start_hcp,best:Array(18).fill(99)};
+      s.hole_scores.forEach((v,i)=>{if(v<per[s.speler_id].best[i])per[s.speler_id].best[i]=v;});
+    });
+    const rows=Object.values(per).map(p=>{
+      const br=p.best.reduce((a,b)=>a+(b<99?b:0),0);
+      const ne=mode==='netto'?br-Math.round(p.hcp):br;
+      return{...p,br,ne};
+    }).sort((a,b)=>a.ne-b.ne);
+    const outParE=PAR.slice(0,9).reduce((a,b)=>a+b,0);
+    const inParE=PAR.slice(9).reduce((a,b)=>a+b,0);
+    document.getElementById('eHead').innerHTML=`<tr><th>#</th><th>Naam</th>${PAR.slice(0,9).map((p,i)=>`<th class="ec">H${i+1}<br><small>p${p}</small></th>`).join('')}<th style="background:#0d2a1a;color:#c8e6c9;font-family:'IBM Plex Mono',monospace;font-size:.62rem">OUT<br><small>${outParE}</small></th>${PAR.slice(9).map((p,i)=>`<th class="ec">H${i+10}<br><small>p${p}</small></th>`).join('')}<th style="background:#0d2a1a;color:#c8e6c9;font-family:'IBM Plex Mono',monospace;font-size:.62rem">IN<br><small>${inParE}</small></th><th style="background:#0d2a1a;color:#c8e6c9;font-family:'IBM Plex Mono',monospace;font-size:.62rem">Tot</th></tr>`;
+    document.getElementById('eBody').innerHTML=rows.map((r,idx)=>{
+      const fCells=r.best.slice(0,9).map((s,i)=>{
+        if(s===99)return'<td class="ec">—</td>';
+        const d=s-PAR[i];const c=d<=-2?'ee':d===-1?'eb':d===0?'ep':d>=2?'ebl':'';
+        return`<td class="ec ${c}">${s}</td>`;
+      }).join('');
+      const bCells=r.best.slice(9).map((s,i)=>{
+        if(s===99)return'<td class="ec">—</td>';
+        const d=s-PAR[i+9];const c=d<=-2?'ee':d===-1?'eb':d===0?'ep':d>=2?'ebl':'';
+        return`<td class="ec ${c}">${s}</td>`;
+      }).join('');
+      const outV=r.best.slice(0,9).filter(x=>x<99).reduce((a,b)=>a+b,0)||'—';
+      const inV=r.best.slice(9).filter(x=>x<99).reduce((a,b)=>a+b,0)||'—';
+      return`<tr>
+        <td><span class="rb ${idx<3?'r'+(idx+1):'ro'}">${idx+1}</span></td>
+        <td style="white-space:nowrap;font-size:.76rem">${r.naam}</td>
+        ${fCells}
+        <td style="background:#f5f0e8;text-align:center;font-weight:700;font-size:.75rem">${outV}</td>
+        ${bCells}
+        <td style="background:#f5f0e8;text-align:center;font-weight:700;font-size:.75rem">${inV}</td>
+        <td><strong>${r.ne||'—'}</strong></td>
+      </tr>`;
+    }).join('');
+  }catch(e){console.error(e);}
+}
+
+// BIRDIES
+let birdMode='bruto';
+async function laadBirds(mode){
+  if(mode)birdMode=mode;
+  document.getElementById('birdBrBtn').className=birdMode==='bruto'?'btn bp bsm':'btn bg bsm';
+  document.getElementById('birdNeBtn').className=birdMode==='netto'?'btn bp bsm':'btn bg bsm';
+  try{
+    const zom=getActivRondes().filter(r=>r.type==='zomergreens'&&r.status==='afgesloten');
+    if(!zom.length){document.getElementById('birdBody').innerHTML='<tr><td colspan="4"><div class="empty">Geen zomergreens ronden</div></td></tr>';return;}
+    const sc=await sbG('scores','ronde_id=in.('+zom.map(r=>r.id).join(',')+')'+'&select=speler_id,birdies,eagles,hole_scores,start_hcp,ronde_id');
+    const sm=Object.fromEntries(allSp.map(s=>[s.id,s.naam]));
+
+    if(birdMode==='bruto'){
+      // Bruto: count actual birdies (score = par - 1) per hole
+      const per={};
+      sc.forEach(s=>{
+        if(!per[s.speler_id])per[s.speler_id]={b:0,e:0};
+        if(!s.hole_scores)return;
+        const r=allR.find(x=>x.id===s.ronde_id);
+        s.hole_scores.forEach((v,i)=>{
+          const diff=v-PAR[i];
+          if(diff<=-2)per[s.speler_id].e++;
+          else if(diff===-1)per[s.speler_id].b++;
+        });
+      });
+      document.getElementById('birdHead').innerHTML='<tr><th>#</th><th>Naam</th><th>Birdies (bruto)</th><th>Eagles</th></tr>';
+      document.getElementById('birdBody').innerHTML=Object.entries(per).map(([id,v])=>({naam:sm[id]||id,...v}))
+        .sort((a,b)=>(b.b+b.e*2)-(a.b+a.e*2))
+        .map((r,i)=>`<tr><td><span class="rb ${i<3?'r'+(i+1):'ro'}">${i+1}</span></td><td>${r.naam}</td><td><strong>${r.b}</strong></td><td><strong>${r.e}</strong></td></tr>`)
+        .join('');
+    } else {
+      // Netto: count birdies based on net score (score - par - shots <= -1)
+      const per={};
+      sc.forEach(s=>{
+        if(!per[s.speler_id])per[s.speler_id]={b:0,e:0};
+        if(!s.hole_scores)return;
+        const r=allR.find(x=>x.id===s.ronde_id);
+        const isW=r&&r.type==='wintergreens';
+        const hcp=parseFloat(s.start_hcp);
+        const pH=isW?Math.round(hcp*.75):Math.round(hcp);
+        s.hole_scores.forEach((v,i)=>{
+          const sh=shots(pH,SI[i]);
+          const net=v-PAR[i]-sh;
+          if(net<=-2)per[s.speler_id].e++;
+          else if(net===-1)per[s.speler_id].b++;
+        });
+      });
+      // Netto eagles count as 2 netto birdies
+      document.getElementById('birdHead').innerHTML='<tr><th>#</th><th>Naam</th><th>Netto Birdies (eagle=2)</th></tr>';
+      document.getElementById('birdBody').innerHTML=Object.entries(per).map(([id,v])=>({naam:sm[id]||id,total:v.b+v.e*2}))
+        .sort((a,b)=>b.total-a.total)
+        .map((r,i)=>`<tr><td><span class="rb ${i<3?'r'+(i+1):'ro'}">${i+1}</span></td><td>${r.naam}</td><td><strong>${r.total}</strong></td></tr>`)
+        .join('');
+    }
+  }catch(e){console.error(e);}
+}
+
+// BLOBS
+async function laadBlobs(){
+  try{
+    const afgBlob=getActivRondes().filter(r=>r.status==='afgesloten');
+    if(!afgBlob.length){document.getElementById('blobBody').innerHTML='<tr><td colspan="3"><div class="empty">Geen afgesloten ronden</div></td></tr>';return;}
+    const sc=await sbG('scores','ronde_id=in.('+afgBlob.map(r=>r.id).join(',')+')'+'&select=speler_id,blobs');
+    const sm=Object.fromEntries(allSp.map(s=>[s.id,s.naam]));
+    const per={};sc.forEach(s=>{per[s.speler_id]=(per[s.speler_id]||0)+(s.blobs||0);});
+    document.getElementById('blobBody').innerHTML=Object.entries(per).map(([id,bl])=>({naam:sm[id]||id,bl}))
+      .sort((a,b)=>b.bl-a.bl)
+      .map((r,i)=>`<tr><td><span class="rb ${i<3?'r'+(i+1):'ro'}">${i+1}</span></td><td>${r.naam}</td><td><strong>${r.bl}</strong></td></tr>`)
+      .join('');
+  }catch(e){console.error(e);}
+}
+
+
+// SCOREKAART
+async function toonScorekaart(scoreId){
+  try{
+    const sc=await sbG('scores','id=eq.'+scoreId);
+    if(!sc.length)return;
+    const s=sc[0];
+    const speler=allSp.find(x=>x.id===s.speler_id);
+    const ronde=allR.find(x=>x.id===s.ronde_id);
+    if(!s.hole_scores){toast('Geen hole-scores beschikbaar',true);return;}
+
+    const isW=ronde&&ronde.type==='wintergreens';
+    const hcp=parseFloat(s.start_hcp);
+    const pH=isW?Math.round(hcp*.75):Math.round(hcp);
+
+    document.getElementById('scTitle').textContent=(speler?.naam||'?')+' — Scorekaart';
+    document.getElementById('scMeta').textContent=
+      fD(ronde?.datum)+' · '+(isW?'❄️ Wintergreens':'☀️ Zomergreens')+
+      ' · Start hcp: '+fH(hcp)+' · Playing hcp: '+pH;
+
+    // Build hole rows
+    const rows=s.hole_scores.map((v,i)=>{
+      const sh=shots(pH,SI[i]);
+      const pts=sfp(v,PAR[i],sh);
+      const brutoDiff=v-PAR[i];
+      const netDiff=v-PAR[i]-sh;
+      const brutoCls=brutoDiff<=-2?'ee':brutoDiff===-1?'eb':brutoDiff===0?'ep':brutoDiff>=2?'ebl':'';
+      const netCls=netDiff<=-2?'ee':netDiff===-1?'eb':netDiff===0?'ep':netDiff>=2?'ebl':'';
+      return{i,v,par:PAR[i],si:SI[i],sh,pts,brutoCls,netCls,brutoDiff,netDiff};
+    });
+
+    // Split front/back
+    const front=rows.slice(0,9);
+    const back=rows.slice(9);
+    const outBruto=front.reduce((a,r)=>a+r.v,0);
+    const inBruto=back.reduce((a,r)=>a+r.v,0);
+    const outPts=front.reduce((a,r)=>a+r.pts,0);
+    const inPts=back.reduce((a,r)=>a+r.pts,0);
+
+    const thS="padding:7px 5px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.62rem";
+    const thD="padding:7px 6px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:.62rem;background:#0d2a1a";
+    document.getElementById('scHead').innerHTML=`
+      <tr style="background:var(--gd);color:var(--cr)">
+        <th style="padding:7px 8px;font-family:'IBM Plex Mono',monospace;font-size:.62rem;text-transform:uppercase">Hole</th>
+        ${front.map(r=>`<th style="${thS}">${r.i+1}</th>`).join('')}
+        <th style="${thD}">OUT</th>
+        ${back.map(r=>`<th style="${thS}">${r.i+1}</th>`).join('')}
+        <th style="${thD}">IN</th>
+        <th style="${thD}">TOT</th>
+      </tr>`;
+
+        const tdC2="padding:5px;text-align:center";
+    const tdD="padding:5px 6px;text-align:center;font-weight:700;background:#f5f0e8";
+    const outPar=front.reduce((a,r)=>a+r.par,0);
+    const inPar=back.reduce((a,r)=>a+r.par,0);
+    document.getElementById('scBody').innerHTML=`
+      <tr style="background:var(--cream-dark,#ede5d0);font-size:.68rem;font-family:'IBM Plex Mono',monospace;color:var(--tl)">
+        <td style="padding:5px 8px">Par</td>
+        ${front.map(r=>`<td style="${tdC2}">${r.par}</td>`).join('')}
+        <td style="${tdD}">${outPar}</td>
+        ${back.map(r=>`<td style="${tdC2}">${r.par}</td>`).join('')}
+        <td style="${tdD}">${inPar}</td>
+        <td style="${tdD}">72</td>
+      </tr>
+      <tr style="font-size:.68rem;font-family:'IBM Plex Mono',monospace;color:var(--tl)">
+        <td style="padding:4px 8px">SI</td>
+        ${front.map(r=>`<td style="${tdC2}">${r.si}</td>`).join('')}
+        <td style="${tdD}">—</td>
+        ${back.map(r=>`<td style="${tdC2}">${r.si}</td>`).join('')}
+        <td style="${tdD}">—</td><td></td>
+      </tr>
+      <tr style="font-size:.68rem;font-family:'IBM Plex Mono',monospace;color:var(--tl)">
+        <td style="padding:4px 8px">Shots</td>
+        ${front.map(r=>`<td style="${tdC2}">${r.sh>0?'+'+r.sh:r.sh===0?'—':r.sh}</td>`).join('')}
+        <td style="${tdD}">—</td>
+        ${back.map(r=>`<td style="${tdC2}">${r.sh>0?'+'+r.sh:r.sh===0?'—':r.sh}</td>`).join('')}
+        <td style="${tdD}">—</td><td></td>
+      </tr>
+      <tr>
+        <td style="padding:7px 8px;font-weight:700;font-size:.78rem">Score</td>
+        ${front.map(r=>{const bg=r.brutoDiff<=-2?'#fffde7':r.brutoDiff===-1?'#ffebee':r.brutoDiff===0?'#e3f2fd':r.brutoDiff===1?'#e8f5e9':r.brutoDiff===2?'#f5f5f5':'#f5f5f5';const col=r.pts===0?'#c0392b':'#1a1a1a';return`<td style="padding:7px 5px;text-align:center;font-weight:700;font-size:.82rem;background:${bg};color:${col}">${r.v}</td>`;}).join('')}
+        <td style="${tdD};font-size:.82rem">${outBruto}</td>
+        ${back.map(r=>{const bg=r.brutoDiff<=-2?'#fffde7':r.brutoDiff===-1?'#ffebee':r.brutoDiff===0?'#e3f2fd':r.brutoDiff===1?'#e8f5e9':r.brutoDiff===2?'#f5f5f5':'#f5f5f5';const col=r.pts===0?'#c0392b':'#1a1a1a';return`<td style="padding:7px 5px;text-align:center;font-weight:700;font-size:.82rem;background:${bg};color:${col}">${r.v}</td>`;}).join('')}
+        <td style="${tdD};font-size:.82rem">${inBruto}</td>
+        <td style="${tdD};font-size:.82rem;background:#ede5d0">${outBruto+inBruto}</td>
+      </tr>
+      <tr>
+        <td style="padding:5px 8px;font-size:.72rem;color:var(--tm)">Netto</td>
+        ${front.map(r=>`<td style="padding:5px;text-align:center;font-size:.75rem;color:var(--tm)">${r.v-r.sh}</td>`).join('')}
+        <td style="${tdD};font-size:.75rem;color:var(--tm)">${front.reduce((a,r)=>a+(r.v-r.sh),0)}</td>
+        ${back.map(r=>`<td style="padding:5px;text-align:center;font-size:.75rem;color:var(--tm)">${r.v-r.sh}</td>`).join('')}
+        <td style="${tdD};font-size:.75rem;color:var(--tm)">${back.reduce((a,r)=>a+(r.v-r.sh),0)}</td>
+        <td style="${tdD};font-size:.75rem;color:var(--tm)">${rows.reduce((a,r)=>a+(r.v-r.sh),0)}</td>
+      </tr>
+      <tr style="background:#f0fff4">
+        <td style="padding:7px 8px;font-weight:700;font-size:.78rem">Sfd</td>
+        ${front.map(r=>`<td style="padding:7px 5px;text-align:center;font-weight:700;font-size:.82rem;color:${r.pts===0?'var(--red)':r.pts>=3?'#2e7d32':'var(--td)'}">${r.pts}</td>`).join('')}
+        <td style="${tdD};color:var(--gm);font-size:.82rem">${outPts}</td>
+        ${back.map(r=>`<td style="padding:7px 5px;text-align:center;font-weight:700;font-size:.82rem;color:${r.pts===0?'var(--red)':r.pts>=3?'#2e7d32':'var(--td)'}">${r.pts}</td>`).join('')}
+        <td style="${tdD};color:var(--gm);font-size:.82rem">${inPts}</td>
+        <td style="${tdD};color:var(--gm);font-size:.82rem;background:#e8f5e9">${outPts+inPts}</td>
+      </tr>`;
+
+    document.getElementById('moScorecard').classList.add('open');
+  }catch(e){toast('Fout: '+e.message,true);}
+}
+
+
+// Calculate bruto birdies from hole_scores (ignoring shots received)
+function brutoBirds(sc){
+  if(!sc.hole_scores) return sc.birdies??0;
+  let b=0,e=0;
+  sc.hole_scores.forEach((v,i)=>{
+    const d=v-PAR[i];
+    if(d<=-2) e++;
+    else if(d===-1) b++;
+  });
+  return b+e; // show total birdies+eagles
+}
+
+
+// Recalculate score values live from hole_scores (fixes historical DB errors)
+function recalcScore(s, ronde){
+  if(!s.hole_scores || s.hole_scores.length!==18) return s;
+  const isW = ronde && ronde.type==='wintergreens';
+  const hcp = parseFloat(s.start_hcp);
+  const pH = isW ? Math.round(hcp*.75) : Math.round(hcp);
+  let bruto=0, sf=0, birds=0, eagles=0, blobs=0;
+  for(let i=0;i<18;i++){
+    const v=s.hole_scores[i];
+    const sh=shots(pH,SI[i]);
+    const p=sfp(v,PAR[i],sh);
+    const brutoDiff=v-PAR[i];
+    bruto+=v; sf+=p;
+    if(brutoDiff<=-2) eagles++;
+    else if(brutoDiff===-1) birds++;
+    if(p===0) blobs++;
+  }
+  const netto=bruto-pH;
+  return {...s, bruto, netto, stableford:sf, birdies:birds, eagles, blobs};
+}
+
+// UTILS
+function fD(d){if(!d)return'—';return new Date(d).toLocaleDateString('nl-NL',{weekday:'short',day:'numeric',month:'short',year:'numeric'});}
+function fH(h){if(h===null||h===undefined)return'—';return parseFloat(h).toFixed(1);}
+function fP(p){if(!p&&p!==0)return'—';const v=parseFloat(p);if(v===0)return'—';return v%1===0?v:v.toFixed(1);}
+function toast(msg,isErr=false){
+  const c=document.getElementById('tc');const t=document.createElement('div');
+  t.className='toast'+(isErr?' err':'');t.textContent=msg;c.appendChild(t);
+  setTimeout(()=>t.remove(),isErr?8000:4000);
+}
+</script>
+
+
+<!-- SEIZOEN HCP MODAL -->
+<div class="mo" id="moHcpSeizoen">
+  <div class="md"><div class="mh"></div>
+    <h3>Nieuw Seizoen — Handicap Bevestigen</h3>
+    <p style="font-size:.84rem;color:var(--tm);margin-bottom:14px">
+      Dit is je eerste ronde van het nieuwe seizoen. Klopt je handicap nog, 
+      of wil je hem aanpassen?
+    </p>
+    <div class="fg">
+      <label>Jouw exacte handicap</label>
+      <input type="number" id="hcpSeizoenInput" step=".1" min="-10" max="54" inputmode="decimal">
+    </div>
+    <div class="brow">
+      <button class="btn bp bf" onclick="bevestigHcpSeizoen()">Bevestigen</button>
+      <button class="btn bg bf" onclick="closeModal('moHcpSeizoen')">Annuleren</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCORECARD MODAL -->
+<div class="mo" id="moScorecard" style="align-items:flex-end">
+  <div class="md" style="border-radius:var(--rl) var(--rl) 0 0;max-height:90vh;overflow-y:auto">
+    <div class="mh"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <h3 id="scTitle" style="margin-bottom:0">Scorekaart</h3>
+      <button class="btn bg bsm" onclick="closeModal('moScorecard')">✕</button>
+    </div>
+    <div id="scMeta" style="font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--tl);margin-bottom:14px"></div>
+    <!-- Front 9 -->
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+      <table id="scTable" style="font-size:.78rem;min-width:480px">
+        <thead id="scHead"></thead>
+        <tbody id="scBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>
