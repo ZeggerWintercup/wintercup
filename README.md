@@ -1,0 +1,2 @@
+# wintercup
+Zegger Wintercup
