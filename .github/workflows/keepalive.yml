@@ -1,7 +1,7 @@
 name: Supabase Keepalive
 on:
   schedule:
-    - cron: '0 8 */6 * *'
+    - cron: '0 8 * * *'  # Every day at 08:00 UTC
   workflow_dispatch:
 jobs:
   ping:
@@ -9,6 +9,7 @@ jobs:
     steps:
       - name: Ping Supabase
         run: |
+          # Write to keepalive table
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -X PATCH \
             "${{ secrets.SUPABASE_URL }}/rest/v1/keepalive?id=eq.1" \
@@ -17,9 +18,20 @@ jobs:
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
             -d '{"last_ping": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}')
-          echo "HTTP status: $STATUS"
+          echo "HTTP status (write): $STATUS"
           if [ "$STATUS" != "204" ]; then
-            echo "Ping failed with status $STATUS"
+            echo "Write ping failed with status $STATUS"
             exit 1
           fi
+
+          # Ping auth health endpoint
+          AUTH=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.SUPABASE_URL }}/auth/v1/health" \
+            -H "apikey: ${{ secrets.SUPABASE_KEY }}")
+          echo "HTTP status (auth): $AUTH"
+          if [ "$AUTH" != "200" ]; then
+            echo "Auth ping failed with status $AUTH"
+            exit 1
+          fi
+
           echo "Supabase pinged successfully"
