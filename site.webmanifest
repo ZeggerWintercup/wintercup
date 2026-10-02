@@ -1,7 +1,9 @@
 {
+  "id": "/wintercup",
   "name": "Zegger Wintercup",
   "short_name": "Wintercup",
-  "start_url": "/wintercup",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a3a2a",
